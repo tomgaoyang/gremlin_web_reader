@@ -64,8 +64,8 @@ class S(BaseHTTPRequestHandler):
         elif str(self.path).encode().decode("utf-8") == '/gender':
             print("Gender!")
             query_result = g.V().hasLabel('user').has('name', name).valueMap("gender").toList()
-            resp_dict = json.loads(query_result[0]['gender'][0])
-            result = resp_dict
+            # resp_dict = json.loads(query_result[0]['gender'][0])
+            result = query_result[0]['gender'][0]
         else:
             print("path has no match")
             result = '"path has no match"'
