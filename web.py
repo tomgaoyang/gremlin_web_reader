@@ -43,8 +43,8 @@ class S(BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length)
         d = post_data.decode("utf-8").split('=')
         name = d[1]
-        print(str(self.path).encode().decode("utf-8"))
-        print(str(self.headers))
+        # print(str(self.path).encode().decode("utf-8"))
+        # print(str(self.headers))
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
         # self._set_response()
@@ -54,7 +54,7 @@ class S(BaseHTTPRequestHandler):
         g = graph.traversal().withRemote(remoteConn)
 
         if str(self.path).encode().decode("utf-8") == '/risk':
-            print("RISK!")
+            # print("RISK!")
             # Execute command
             query_result = g.E().hasLabel('risk').outV().hasLabel('user').has('name', name).toList()
             if query_result:
@@ -62,12 +62,12 @@ class S(BaseHTTPRequestHandler):
             else:
                 result = 0
         elif str(self.path).encode().decode("utf-8") == '/gender':
-            print("Gender!")
+            # print("Gender!")
             query_result = g.V().hasLabel('user').has('name', name).valueMap("gender").toList()
             # resp_dict = json.loads(query_result[0]['gender'][0])
             result = query_result[0]['gender'][0]
         else:
-            print("path has no match")
+            # print("path has no match")
             result = '"path has no match"'
         json_string = json.dumps('{' + str(result) + '}' )
         self.wfile.write(json_string.encode())
