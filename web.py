@@ -12,6 +12,7 @@ Send a POST request:
     curl -d "foo=bar&bin=baz" http://localhost:8000
 """
 import argparse
+import logging
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
