@@ -7,18 +7,7 @@ from gremlin_python.process.graph_traversal import __
 from gremlin_python.process.strategies import *
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 
-"""
-Very simple HTTP server in python (Updated for Python 3.7)
-Usage:
-    ./dummy-web-server.py -h
-    ./dummy-web-server.py -l localhost -p 8000
-Send a GET request:
-    curl http://localhost:8000
-Send a HEAD request:
-    curl -I http://localhost:8000
-Send a POST request:
-    curl -d "foo=bar&bin=baz" http://localhost:8000
-"""
+# Start web server
 import argparse
 import logging
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -48,15 +37,12 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
 
     def do_POST(self):
-        # Doesn't do anything with posted data
+        # Begin with posted data
         self._set_headers()
-        # self.wfile.write(self._html("POST!"))
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
-        print(post_data)
-        # d = dict(s.split('=') for s in post_data.decode("utf-8") )
         d = post_data.decode("utf-8").split('=')
-        print(d[1])
+        name = d[1]
         print(str(self.path).encode().decode("utf-8"))
         print(str(self.headers))
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
@@ -69,20 +55,17 @@ class S(BaseHTTPRequestHandler):
 
         if str(self.path).encode().decode("utf-8") == '/risk':
             print("RISK!")
-            # print(post_data)
-            # print("query data = ")
-            # print(g.E().hasLabel('risk').outV().hasLabel('user').has('name', d[1]).toList())
             # Execute command
-            query_result = g.E().hasLabel('risk').outV().hasLabel('user').has('name', d[1]).toList()
-            print("query_result = ")
-            print(query_result)
+            query_result = g.E().hasLabel('risk').outV().hasLabel('user').has('name', name).toList()
             if query_result:
                 result = 1
             else:
                 result = 0
         elif str(self.path).encode().decode("utf-8") == '/gender':
             print("Gender!")
-            result = 'M'
+            query_result = g.V().hasLabel('user').has('name', name).valueMap("gender").toList()
+            resp_dict = json.loads(query_result[0]['gender'][0])
+            result = resp_dict
         else:
             print("path has no match")
             result = '"path has no match"'
