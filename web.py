@@ -43,13 +43,13 @@ class S(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         print(post_data)
-        print(str(self.path).decode("utf-8"))
+        print(str(self.path).encode().decode("utf-8"))
         print(str(self.headers))
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
         # self._set_response()
 
-        if str(self.path).decode("utf-8") == '/risk':
+        if str(self.path).encode().decode("utf-8") == '/risk':
             print("RISK!")
         if str(self.path) == '/gender':
             print("Gender!")
