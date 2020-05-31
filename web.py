@@ -13,7 +13,7 @@ Send a POST request:
 """
 import argparse
 import logging
-    from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 
 class S(BaseHTTPRequestHandler):
