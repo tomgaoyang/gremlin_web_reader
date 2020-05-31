@@ -54,6 +54,9 @@ class S(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         print(post_data)
+        # d = dict(s.split('=') for s in post_data.decode("utf-8") )
+        d = post_data.decode("utf-8").split('=')
+        print(d[1])
         print(str(self.path).encode().decode("utf-8"))
         print(str(self.headers))
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
@@ -66,10 +69,14 @@ class S(BaseHTTPRequestHandler):
 
         if str(self.path).encode().decode("utf-8") == '/risk':
             print("RISK!")
-            print(post_data)
-            print("query data = ")
-            print(g.E().hasLabel('risk').outV().hasLabel('user').has('name', 'lily').toList())
-            if g.E().hasLabel('risk').outV().hasLabel('user').has('name', 'lily').toList()[0] is not None:
+            # print(post_data)
+            # print("query data = ")
+            # print(g.E().hasLabel('risk').outV().hasLabel('user').has('name', d[1]).toList())
+            # Execute command
+            query_result = g.E().hasLabel('risk').outV().hasLabel('user').has('name', d[1]).toList()
+            print("query_result = ")
+            print(query_result)
+            if query_result:
                 result = 1
             else:
                 result = 0
