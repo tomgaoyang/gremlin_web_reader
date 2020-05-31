@@ -16,6 +16,16 @@ import logging
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 
+# Start importing gremlin library
+from __future__  import print_function  # Python 2/3 compatibility
+from gremlin_python import statics
+from gremlin_python.structure.graph import Graph
+from gremlin_python.process.graph_traversal import __
+from gremlin_python.process.strategies import *
+from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
+graph = Graph()
+
+
 class S(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
@@ -49,13 +59,26 @@ class S(BaseHTTPRequestHandler):
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
         # self._set_response()
 
+        # Start opening connections
+        remoteConn = DriverRemoteConnection('wss://neptunedbcluster-duhtid8h5yms.cluster-cqhaxlvmnnup.ap-northeast-2.neptune.amazonaws.com:8182/gremlin','g')
+        g = graph.traversal().withRemote(remoteConn)
+
         if str(self.path).encode().decode("utf-8") == '/risk':
             print("RISK!")
-        if str(self.path) == '/gender':
+            print(post_data)
+            if g.E().hasLabel('risk').outV().hasLabel('user').has('name', 'lily').toList()[0] is not None:
+                result = 1
+            else:
+                result = 0
+        elif str(self.path).encode().decode("utf-8") == '/gender':
             print("Gender!")
-        json_string = json.dumps(result)
+            result = 'M'
+        else:
+            print("path has no match")
+            result = "path has no match"
+        json_string = json.dumps('{' + str(result) + '}' )
         self.wfile.write(json_string)
-        self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
+        # self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
 
 def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):
