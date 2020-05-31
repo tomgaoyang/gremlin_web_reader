@@ -67,6 +67,8 @@ class S(BaseHTTPRequestHandler):
         if str(self.path).encode().decode("utf-8") == '/risk':
             print("RISK!")
             print(post_data)
+            print("query data = ")
+            print(g.E().hasLabel('risk').outV().hasLabel('user').has('name', 'lily').toList())
             if g.E().hasLabel('risk').outV().hasLabel('user').has('name', 'lily').toList()[0] is not None:
                 result = 1
             else:
@@ -76,9 +78,9 @@ class S(BaseHTTPRequestHandler):
             result = 'M'
         else:
             print("path has no match")
-            result = "path has no match"
+            result = '"path has no match"'
         json_string = json.dumps('{' + str(result) + '}' )
-        self.wfile.write(json_string)
+        self.wfile.write(json_string.encode())
         # self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
 
