@@ -41,6 +41,8 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
+        print('Received post data = ')
+        print(post_data)
         d = post_data.decode("utf-8").split('=')
         name = d[1]
         # print(str(self.path).encode().decode("utf-8"))
